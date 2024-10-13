@@ -18,3 +18,10 @@
       file:
         state: touch
         path: "{{file}}"
+    - name: Checking the kernel version
+      shell: cat /etc/os-release
+      register: kernel_version
+    - name: Printing the kernel version
+      debug:
+        msg: "{{kernel_version.stdout}}"
+    

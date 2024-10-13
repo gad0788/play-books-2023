@@ -1,0 +1,20 @@
+---
+- hosts: ws
+  become: yes
+  gather_facts: yes
+  ignore_errors: yes
+  vars: 
+    user_name: petit2023
+    group: terraform
+    file: /var/www/html/index.html
+  tasks:
+    - name: Creating users in our system
+      user:
+        name: "{{user_name}}"
+    - name: Creating group name
+      group:
+        name: "{{group}}"
+    - name: Creating file on system
+      file:
+        state: touch
+        path: "{{file}}"

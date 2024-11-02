@@ -1,0 +1,42 @@
+---
+- name: Automate installation and setup tasks
+  hosts: all
+  become: yes
+
+  tasks:
+    - name: Install necessary packages
+      package:
+        name:
+          - lsof
+          - wget
+          - passwd
+          - docker
+          - unzip
+        state: present
+
+    - name: Install Java 11
+      package:
+        name: "java-11*"
+        state: present
+
+    - name: Create directory /opt/qa/spg
+      file:
+        path: /opt/qa/spg
+        state: directory
+        mode: '0755'
+
+    - name: Create log file spg.log
+      file:
+        path: /opt/qa/spg/spg.log
+        state: touch
+        mode: '0644'
+
+    - name: Start Docker service
+      systemd:
+        name: docker
+        state: started
+
+    - name: Enable Docker service on boot
+      systemd:
+        name: docker
+        enabled: yes

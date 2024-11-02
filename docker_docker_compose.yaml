@@ -1,0 +1,50 @@
+---
+- name: Docker and utilities setup
+  hosts: all
+  become: yes
+
+  tasks:
+    - name: Update all packages
+      yum:
+        name: '*'
+        state: latest
+
+    - name: Install Docker
+      yum:
+        name: docker
+        state: present
+
+    - name: Add ec2-user to the Docker group
+      user:
+        name: ec2-user
+        groups: docker
+        append: yes
+
+    - name: Start Docker service
+      service:
+        name: docker
+        state: started
+        enabled: yes
+
+    - name: Change terminal color for ec2-user
+      lineinfile:
+        path: /home/ec2-user/.bash_profile
+        line: "PS1='\\e[1;32m\\u@\\h \\w$ \\e[m'"
+        create: yes
+
+    - name: Install Git
+      yum:
+        name: git
+        state: present
+
+    - name: Install wget
+      yum:
+        name: wget
+        state: present
+
+    - name: Install Docker Compose
+      get_url:
+        url: "https://github.com/docker/compose/releases/download/1.20.0/docker-compose-{{ ansible_system }}-{{ ansible_architecture }}"
+        dest: /usr/local/bin/docker-compose
+        mode: '0755'
+
